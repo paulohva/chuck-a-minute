@@ -9,7 +9,7 @@
     "start": "if test \"$NODE_ENV\" = \"production\"; then npm run prod; else npm run dev; fi",
     "dev": "concurrently \"nodemon server\" \"cd react-ui && npm start\"",
     "prod": "NODE_ENV=production node server",
-    "heroku-postbuild": "cd react-ui/ && yarn && npm run build"
+    "heroku-postbuild": "cd react-ui/ && yarn install --production=false && yarn install && npm run build"
   },
   "cacheDirectories": [
     "node_modules",
