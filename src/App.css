@@ -1,0 +1,20 @@
+@import "~purecss/build/pure.css";
+@import "~font-awesome/css/font-awesome.css";
+
+@import url(http://fonts.googleapis.com/css?family=Fjalla+One);
+
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
+body {
+    color: #526066;
+}
+
+h1,h2,h3,h4 {
+  font-family: "Fjalla One";
+  font-weight: normal;
+}
+
+a.white-link {
+    color: #eee;
+}
