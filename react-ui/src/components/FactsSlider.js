@@ -3,20 +3,33 @@ import Slider from 'react-slick';
 
 import FactsSlide from './FactsSlide';
 
-const settings = {
+const defaultSettings = {
   arrows: false,
-  autoplay: true,
+  autoplay: false,
   infinite: true,
   speed: 1000,
   slidesToShow: 1,
-  autoplaySpeed: 9000,
   centerMode: true,
   draggable: false,
   pauseOnHover: false
 };
 
 const FactsSlider = (props) => {
-  const slides = props.facts.map((fact, index) => <div key={fact.id}><FactsSlide {...fact} index={index} /></div>);
+  if (props.facts.length === 0) {
+    return null;
+  }
+
+  const slides = props.facts.map((fact, index) => (
+    <div key={fact._id}>
+      <FactsSlide {...fact} index={index} onVote={() => props.onVote(fact)}/>
+    </div>
+  ));
+
+  const settings = {
+    ...defaultSettings,
+    slickGoTo: props.currentSlide
+  };
+
   return (
     <Slider {...settings}>
       {slides}

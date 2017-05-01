@@ -60,8 +60,8 @@ const FactsSlide = (props) => {
           <h2 style={styles.text}>
             {props.text}
           </h2>
-          <h3 style={styles.votes}>{props.votes} votes</h3>
-          <button className="pure-button button-large pure-button-primary" style={styles.voteButton} onClick={props.onClick}>
+          <h3 style={styles.votes}>{props.votes ? props.votes + ' votes' : 'no votes yet :('}</h3>
+          <button className="pure-button button-large pure-button-primary" style={styles.voteButton} onClick={props.onVote}>
             <i className="fa fa-thumbs-o-up"></i> Thumbs Up!
           </button>
         </div>

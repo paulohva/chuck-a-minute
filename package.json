@@ -16,7 +16,12 @@
     "react-ui/node_modules"
   ],
   "dependencies": {
-    "express": "^4.14.1"
+    "async": "^2.4.0",
+    "body-parser": "^1.17.1",
+    "config": "^1.25.1",
+    "express": "^4.14.1",
+    "mongodb": "^2.2.26",
+    "morgan": "^1.8.1"
   },
   "repository": {
     "type": "git",
