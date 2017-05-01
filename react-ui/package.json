@@ -1,0 +1,25 @@
+{
+  "name": "chuck-a-minute",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.16.1",
+    "font-awesome": "^4.7.0",
+    "purecss": "^0.6.2",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
+    "react-slick": "^0.14.11",
+    "slick-carousel": "^1.6.0"
+  },
+  "devDependencies": {
+    "react-scripts": "0.9.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://localhost:5000"
+}

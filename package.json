@@ -1,25 +1,30 @@
 {
   "name": "chuck-a-minute",
   "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "font-awesome": "^4.7.0",
-    "jquery": "^3.2.1",
-    "modernizr": "^3.5.0",
-    "purecss": "^0.6.2",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
-    "react-router": "^4.1.1",
-    "react-router-dom": "^4.1.1",
-    "react-slick": "^0.14.11",
-    "slick-carousel": "^1.6.0"
-  },
-  "devDependencies": {
-    "react-scripts": "0.9.5"
+  "description": "",
+  "engines": {
+    "node": "6.9.x"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "eject": "react-scripts eject"
+    "start": "if test \"$NODE_ENV\" = \"production\"; then npm run prod; else npm run dev; fi",
+    "dev": "concurrently \"nodemon server\" \"cd react-ui && npm start\"",
+    "prod": "NODE_ENV=production node server",
+    "heroku-postbuild": "cd react-ui/ && npm install --only=dev && npm install && npm run build"
+  },
+  "cacheDirectories": [
+    "node_modules",
+    "react-ui/node_modules"
+  ],
+  "dependencies": {
+    "express": "^4.14.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vmlf01/chuck-a-minute.git"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^3.4.0"
   }
 }
