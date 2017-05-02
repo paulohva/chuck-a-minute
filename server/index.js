@@ -4,7 +4,9 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const mongodb = require('./mongo-client');
+const redisClient = require('./redis-client');
 const dbInitializer = require('./facts-db-initializer');
+const redisInitializer = require('./facts-redis-initializer');
 
 function connectToDatabase(callback) {
   mongodb.connect(config.get('mongodb'), (err, db) => {
@@ -16,7 +18,17 @@ function connectToDatabase(callback) {
   });
 }
 
-function startHttpServer(db, callback) {
+function connectToRedis(callback) {
+  redisClient.connect(config.get('redis'), (err, redis) => {
+    if (err) {
+      return console.log('Error connecting to redis...', err);
+    }
+
+    callback(redis);
+  });
+}
+
+function startHttpServer(db, redis, callback) {
   const app = express();
   const PORT = process.env.PORT || config.get('api.port') || 5000;
 
@@ -35,18 +47,21 @@ function startHttpServer(db, callback) {
     res.send('{"message":"Hello from the custom server!"}');
   });
 
-  app.get('/api/facts', require('./endpoints/get-facts')({ db: db }));
-  app.post('/api/facts', require('./endpoints/add-fact')({ db: db }));
-  app.post('/api/facts/vote/:id', require('./endpoints/vote-fact')({ db: db }));
+  app.get('/api/facts', require('./endpoints/get-facts')({ db: db, redis: redis }));
+  app.post('/api/facts', require('./endpoints/add-fact')({ db: db, redis: redis }));
+  app.post('/api/facts/vote/:id', require('./endpoints/vote-fact')({ db: db, redis: redis }));
 
   // endpoint to reset all mongodb data
   app.get('/api/reset', (req, res, next) => {
-    dbInitializer.resetData(mongodb.getDb(), (err) => {
-      if (err) {
-        return next(err);
-      }
+    dbInitializer.resetData(mongodb.getDb(), (mongoErr) => {
+      redisInitializer.resetData(redisClient.getClient(), (redisErr) => {
+        if (mongoErr || redisErr) {
+          return next(mongoErr || redisErr);
+        }
 
-      res.status(200).json({ status: 200, description: 'OK' });
+        res.status(200).json({ status: 200, description: 'OK' });
+      });
+
     });
   });
 
@@ -89,8 +104,10 @@ function startHttpServer(db, callback) {
 
 connectToDatabase((db) =>
   dbInitializer.initDatabaseStructure(db, () =>
-    startHttpServer(db, () =>
-      console.log('App Server ready')
+    connectToRedis((redis) =>
+      startHttpServer(db, redis, () =>
+        console.log('App Server ready')
+      )
     )
   )
 );

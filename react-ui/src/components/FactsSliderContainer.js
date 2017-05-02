@@ -27,18 +27,12 @@ class FactsSliderContainer extends React.Component {
   _loadFacts(scheduleUpdate) {
     return axios.get('/api/facts')
       .then(response => {
-        const currentSlide = response.data.length ? (this.state.currentSlide + 1) % response.data.length : 0;
-        this.setState({ facts: response.data, currentSlide: currentSlide, isLoading: false });
+        const facts = response.data.data;
+        const currentSlide = facts.length ? (this.state.currentSlide + 1) % facts.length : 0;
+        this.setState({ facts: facts, currentSlide: currentSlide, isLoading: false });
         if (scheduleUpdate && this.state.isActive) {
           setTimeout(() => this._loadFacts(true), 5000);
         }
-      });
-  }
-
-  _updateVoteCount() {
-    axios.get('/api/facts')
-      .then(response => {
-        this.setState({ facts: response.data, isLoading: false });
       });
   }
 
@@ -59,12 +53,8 @@ class FactsSliderContainer extends React.Component {
 
       // save vote to server
       return axios.post(`/api/facts/vote/${fact._id}`)
-        .then(() => {
-          this.setState({ isVoting: false });
-        })
-        .catch(() => {
-          this.setState({ isVoting: false });
-        });
+        .then(() => this.setState({ isVoting: false }))
+        .catch(() => this.setState({ isVoting: false }));
     }
   }
 

@@ -10,12 +10,8 @@ module.exports = {
         ]
     },
     redis: {
-        servers: [
-            {
-                host: '173.212.202.107',
-                port: 6379,
-                username: 'Rupe4l'
-            }
-        ]
+        host: '173.212.202.107',
+        port: 6379,
+        password: 'Rupe4l'
     }
 };
