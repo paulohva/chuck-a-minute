@@ -4,7 +4,7 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const mongodb = require('./mongo-client');
-const initDatabaseStructure = require('./facts-db-initializer');
+const dbInitializer = require('./facts-db-initializer');
 
 function connectToDatabase(callback) {
   mongodb.connect(config.get('mongodb'), (err, db) => {
@@ -38,6 +38,17 @@ function startHttpServer(db, callback) {
   app.get('/api/facts', require('./endpoints/get-facts')({ db: db }));
   app.post('/api/facts', require('./endpoints/add-fact')({ db: db }));
   app.post('/api/facts/vote/:id', require('./endpoints/vote-fact')({ db: db }));
+
+  // endpoint to reset all mongodb data
+  app.get('/api/reset', (req, res, next) => {
+    dbInitializer.resetData(mongodb.getDb(), (err) => {
+      if (err) {
+        return next(err);
+      }
+
+      res.status(200).json({ status: 200, description: 'OK' });
+    });
+  });
 
   // All remaining requests return the React app, so it can handle routing.
   app.get('*', (req, res) => {
@@ -77,7 +88,7 @@ function startHttpServer(db, callback) {
 }
 
 connectToDatabase((db) =>
-  initDatabaseStructure(db, () =>
+  dbInitializer.initDatabaseStructure(db, () =>
     startHttpServer(db, () =>
       console.log('App Server ready')
     )

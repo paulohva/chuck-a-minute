@@ -65,18 +65,14 @@ function resetFactsData(db, callback) {
     });
 }
 
-module.exports = (db, callback) => {
-    createFactsCollection(db, (err) => {
-        if (err) {
-            console.log('Error:', err);
-        }
-
-        createFactsMinuteCollection(db, (err) => {
+module.exports = {
+    initDatabaseStructure: (db, callback) => {
+        createFactsCollection(db, (err) => {
             if (err) {
-                console.log('Error', err);
+                console.log('Error:', err);
             }
 
-            resetFactsData(db, (err) => {
+            createFactsMinuteCollection(db, (err) => {
                 if (err) {
                     console.log('Error', err);
                 }
@@ -84,5 +80,14 @@ module.exports = (db, callback) => {
                 callback();
             });
         });
-    });
+    },
+    resetData: (db, callback) => {
+        resetFactsData(db, (err) => {
+            if (err) {
+                return callback(err);
+            }
+
+            callback();
+        });
+    }
 };

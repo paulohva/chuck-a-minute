@@ -36,5 +36,6 @@ function disconnect() {
 
 module.exports = {
     connect: connect,
-    disconnect: disconnect
+    disconnect: disconnect,
+    getDb: () => mongodb
 };
