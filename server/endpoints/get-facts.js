@@ -3,7 +3,9 @@ const EXPIRE_TIME_MILS = EXPIRE_TIME_SECS * 1000;
 const NUMBER_OF_FACTS = 3;
 
 module.exports = (config) => (req, res, next) => {
-    getFactsFromRedis(config.redis, (err, facts) => {
+    const useRedis = !('noredis' in req.query);
+
+    getFactsFromRedis(config.redis, useRedis, (err, facts) => {
         if (err) {
             return getFactsFromMongo(config.db, (err, facts) => {
                 if (err) {
@@ -37,7 +39,7 @@ module.exports = (config) => (req, res, next) => {
                     updateMongoFactsMinute(config.db, factsMinute, () => { });
 
                     // store random facts in redis
-                    updateRedisFactsMinute(config.redis, factsMinute, () => { });
+                    useRedis && updateRedisFactsMinute(config.redis, factsMinute, () => { });
                 });
             });
         }
@@ -53,7 +55,11 @@ function sendFacts(res, facts, source) {
     res.send({ source: source, data: facts.slice(0, NUMBER_OF_FACTS) });
 }
 
-function getFactsFromRedis(redis, callback) {
+function getFactsFromRedis(redis, useRedis, callback) {
+    if (!useRedis) {
+        return callback(new Error('Not using redis'));
+    }
+
     redis.hgetall('facts_minute', (err, facts) => {
         if (err || !facts) {
             return callback(new Error('Facts not available on redis'));
