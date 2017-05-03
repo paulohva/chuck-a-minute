@@ -2,6 +2,8 @@ function resetFactsData(redis, callback) {
     redis.del('facts_minute', (err, result) => {
         callback(err, result);
     });
+
+    redis.set('value', 10);
 }
 
 module.exports = {

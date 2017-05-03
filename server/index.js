@@ -51,6 +51,8 @@ function startHttpServer(db, redis, callback) {
   app.post('/api/facts', require('./endpoints/add-fact')({ db: db, redis: redis }));
   app.post('/api/facts/vote/:id', require('./endpoints/vote-fact')({ db: db, redis: redis }));
 
+  app.get('/api/values', require('./endpoints/values')({ db: db, redis: redis }));
+
   // endpoint to reset all mongodb data
   app.get('/api/reset', (req, res, next) => {
     dbInitializer.resetData(mongodb.getDb(), (mongoErr) => {

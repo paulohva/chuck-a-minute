@@ -40,6 +40,9 @@ function createFactsMinuteCollection(db, callback) {
 
 function resetFactsData(db, callback) {
     const factsCollection = db.collection('facts');
+
+    db.collection('value').insert({ _id: 'value', value: '15' });
+
     factsCollection.deleteMany({}, (err) => {
         if (err) {
             return callback(err);
